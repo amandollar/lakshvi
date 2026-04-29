@@ -33,3 +33,54 @@ button,
 a {
   -webkit-tap-highlight-color: transparent;
 }
+
+.product-mobile-track {
+  animation: product-mobile-marquee 18s linear infinite;
+  will-change: transform;
+}
+
+.reel-mobile-track {
+  animation: reel-mobile-marquee 20s linear infinite;
+  will-change: transform;
+}
+
+.product-mobile-track:focus-within,
+.product-mobile-track:hover,
+.reel-mobile-track:focus-within,
+.reel-mobile-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes product-mobile-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+@keyframes reel-mobile-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-mobile-track,
+  .reel-mobile-track {
+    animation: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .product-mobile-track > *,
+  .reel-mobile-track > * {
+    scroll-snap-align: start;
+  }
+}

@@ -19,6 +19,14 @@ const textReveal = {
   show: { opacity: 1, y: 0 },
 };
 
+const hearts = [
+  { left: "6%", top: "20%", size: "text-lg", delay: 0 },
+  { left: "18%", top: "72%", size: "text-sm", delay: 0.8 },
+  { left: "54%", top: "24%", size: "text-base", delay: 1.4 },
+  { left: "68%", top: "68%", size: "text-xs", delay: 0.4 },
+  { left: "36%", top: "12%", size: "text-xs", delay: 1.9 },
+];
+
 export function Hero() {
   return (
     <section id="home" className="px-4 pb-10 pt-20 sm:px-6 sm:pt-28 lg:px-8">
@@ -33,11 +41,36 @@ export function Hero() {
                 transition: { staggerChildren: 0.08, delayChildren: 0.05 },
               },
             }}
-            className="flex flex-col justify-between px-1 py-6 sm:min-h-[500px] sm:px-6 sm:py-9 lg:min-h-[580px] lg:pr-14"
+            className="relative flex flex-col justify-between px-1 py-6 sm:min-h-[500px] sm:px-6 sm:py-9 lg:min-h-[580px] lg:pr-14"
           >
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+              {hearts.map((heart, index) => (
+                <motion.span
+                  key={index}
+                  initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                  animate={{
+                    opacity: [0, 0.46, 0.18, 0.4],
+                    y: [0, -16, -8, -22],
+                    rotate: [-8, 8, -4, 6],
+                    scale: [0.85, 1, 0.92, 1],
+                  }}
+                  transition={{
+                    duration: 5.8,
+                    delay: heart.delay,
+                    repeat: Infinity,
+                    repeatType: "mirror",
+                    ease: "easeInOut",
+                  }}
+                  className={`absolute font-display ${heart.size} text-blush/60`}
+                  style={{ left: heart.left, top: heart.top }}
+                >
+                  ♥
+                </motion.span>
+              ))}
+            </div>
             <div />
 
-            <div className="max-w-[34rem] py-6 sm:py-8 lg:py-9">
+            <div className="relative max-w-[34rem] py-6 sm:py-8 lg:py-9">
               <motion.p
                 variants={textReveal}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}

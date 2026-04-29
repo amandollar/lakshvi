@@ -15,7 +15,52 @@ const reels = [
   { label: "Ethnic Gen Z", src: thirdReelUrl },
 ];
 
+function ReelCard({
+  reel,
+  index,
+  className = "",
+}: {
+  reel: (typeof reels)[number];
+  index: number;
+  className?: string;
+}) {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-90px" }}
+      transition={{
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1],
+        delay: index * 0.08,
+      }}
+      whileHover={{ y: -6 }}
+      className={`group w-full overflow-hidden bg-ivory p-2 shadow-[0_18px_55px_rgba(49,40,39,0.075)] transition-shadow hover:shadow-[0_26px_80px_rgba(49,40,39,0.12)] ${className}`}
+    >
+      <div className="relative mx-auto aspect-[9/16] max-h-[420px] overflow-hidden bg-linen">
+        <video
+          src={reel.src}
+          className="h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+        />
+        <div className="absolute inset-x-3 bottom-3 flex items-center justify-between bg-ivory/88 px-3 py-2.5 backdrop-blur">
+          <p className="font-accent text-[10px] font-semibold uppercase tracking-[0.18em] text-cocoa">
+            {reel.label}
+          </p>
+          <p className="text-xs text-ink/48">Lakshvi</p>
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
 export function ReelSection() {
+  const mobileReels = [...reels, ...reels];
+
   return (
     <section className="bg-mist px-5 py-12 sm:px-8 sm:py-16 lg:px-10">
       <div className="mx-auto max-w-7xl">
@@ -45,39 +90,27 @@ export function ReelSection() {
           </motion.p>
         </div>
 
-        <div className="mx-auto grid max-w-5xl justify-items-center gap-4 sm:grid-cols-3">
+        <div className="-mx-5 overflow-hidden pl-5 sm:hidden">
+          <div className="reel-mobile-track flex w-max gap-4 pr-5">
+            {mobileReels.map((reel, index) => (
+              <ReelCard
+                key={`${reel.label}-${index}`}
+                reel={reel}
+                index={index % reels.length}
+                className="w-[70vw] max-w-[270px] shrink-0"
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="mx-auto hidden max-w-5xl justify-items-center gap-4 sm:grid sm:grid-cols-3">
           {reels.map((reel, index) => (
-            <motion.article
+            <ReelCard
               key={`${reel.label}-${index}`}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-90px" }}
-              transition={{
-                duration: 0.6,
-                ease: [0.22, 1, 0.36, 1],
-                delay: index * 0.08,
-              }}
-              whileHover={{ y: -6 }}
-              className="group w-full max-w-[240px] overflow-hidden bg-ivory p-2 shadow-[0_18px_55px_rgba(49,40,39,0.075)] transition-shadow hover:shadow-[0_26px_80px_rgba(49,40,39,0.12)] sm:max-w-none"
-            >
-              <div className="relative mx-auto aspect-[9/16] max-h-[380px] overflow-hidden bg-linen sm:max-h-[430px]">
-                <video
-                  src={reel.src}
-                  className="h-full w-full object-cover"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                />
-                <div className="absolute inset-x-3 bottom-3 flex items-center justify-between bg-ivory/88 px-3 py-2.5 backdrop-blur">
-                  <p className="font-accent text-[10px] font-semibold uppercase tracking-[0.18em] text-cocoa">
-                    {reel.label}
-                  </p>
-                  <p className="text-xs text-ink/48">Lakshvi</p>
-                </div>
-              </div>
-            </motion.article>
+              reel={reel}
+              index={index}
+              className="max-w-[240px] sm:max-w-none"
+            />
           ))}
         </div>
       </div>

@@ -33,8 +33,69 @@ const products = [
 
 type Product = (typeof products)[number];
 
+function ProductCard({
+  product,
+  index,
+  onSelect,
+  className = "",
+}: {
+  product: Product;
+  index: number;
+  onSelect: (product: Product) => void;
+  className?: string;
+}) {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 22 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-90px" }}
+      transition={{
+        delay: index * 0.08,
+        duration: 0.55,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      whileHover={{ y: -6 }}
+      className={`group bg-ivory shadow-[0_20px_65px_rgba(49,40,39,0.055)] transition-shadow hover:shadow-[0_26px_80px_rgba(49,40,39,0.095)] ${className}`}
+    >
+      <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-b from-mist to-linen">
+        <div className="pointer-events-none absolute inset-x-8 bottom-8 h-20 rounded-full bg-ink/10 blur-2xl" />
+        <Image
+          src={product.image}
+          alt={product.name}
+          fill
+          unoptimized
+          sizes="(min-width: 768px) 33vw, 84vw"
+          className="object-contain object-bottom p-3 transition duration-700 group-hover:scale-[1.025]"
+        />
+        <span className="absolute left-4 top-4 bg-ivory/90 px-3 py-2 font-accent text-[10px] font-semibold uppercase tracking-[0.18em] text-cocoa backdrop-blur-sm">
+          New
+        </span>
+      </div>
+      <div className="p-5 sm:p-6">
+        <div className="mb-5 flex items-start justify-between gap-4">
+          <div>
+            <h3 className="font-display text-[1.75rem] leading-none text-ink sm:text-3xl">
+              {product.name}
+            </h3>
+            <p className="mt-2 text-sm text-ink/52">{product.tone}</p>
+          </div>
+          <p className="text-sm font-medium text-ink">{product.price}</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => onSelect(product)}
+          className="block w-full bg-mist py-3 text-center font-accent text-[11px] font-semibold uppercase tracking-[0.18em] text-ink transition hover:bg-ink hover:text-ivory"
+        >
+          View Details
+        </button>
+      </div>
+    </motion.article>
+  );
+}
+
 export function Products() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const mobileProducts = [...products, ...products];
 
   return (
     <section id="shop" className="bg-ivory px-5 py-14 sm:px-8 sm:py-20 lg:px-10">
@@ -62,54 +123,28 @@ export function Products() {
           </div>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="-mx-5 overflow-hidden pl-5 md:hidden">
+          <div className="product-mobile-track flex w-max gap-4 pr-5">
+            {mobileProducts.map((product, index) => (
+              <ProductCard
+                key={`${product.name}-${index}`}
+                product={product}
+                index={index % products.length}
+                onSelect={setSelectedProduct}
+                className="w-[82vw] max-w-[360px] shrink-0"
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="hidden gap-5 md:grid md:grid-cols-3">
           {products.map((product, index) => (
-            <motion.article
+            <ProductCard
               key={product.name}
-              initial={{ opacity: 0, y: 22 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-90px" }}
-              transition={{
-                delay: index * 0.08,
-                duration: 0.55,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              whileHover={{ y: -6 }}
-              className="group bg-ivory shadow-[0_20px_65px_rgba(49,40,39,0.055)] transition-shadow hover:shadow-[0_26px_80px_rgba(49,40,39,0.095)]"
-            >
-              <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-b from-mist to-linen">
-                <div className="pointer-events-none absolute inset-x-8 bottom-8 h-20 rounded-full bg-ink/10 blur-2xl" />
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  unoptimized
-                  sizes="(min-width: 768px) 33vw, 100vw"
-                  className="object-contain object-bottom p-3 transition duration-700 group-hover:scale-[1.025]"
-                />
-                <span className="absolute left-4 top-4 bg-ivory/90 px-3 py-2 font-accent text-[10px] font-semibold uppercase tracking-[0.18em] text-cocoa backdrop-blur-sm">
-                  New
-                </span>
-              </div>
-              <div className="p-5 sm:p-6">
-                <div className="mb-5 flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="font-display text-[1.75rem] leading-none text-ink sm:text-3xl">
-                      {product.name}
-                    </h3>
-                    <p className="mt-2 text-sm text-ink/52">{product.tone}</p>
-                  </div>
-                  <p className="text-sm font-medium text-ink">{product.price}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedProduct(product)}
-                  className="block w-full bg-mist py-3 text-center font-accent text-[11px] font-semibold uppercase tracking-[0.18em] text-ink transition hover:bg-ink hover:text-ivory"
-                >
-                  View Details
-                </button>
-              </div>
-            </motion.article>
+              product={product}
+              index={index}
+              onSelect={setSelectedProduct}
+            />
           ))}
         </div>
       </div>
